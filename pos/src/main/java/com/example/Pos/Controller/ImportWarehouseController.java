@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.ImportWarehouse;
 import com.example.Pos.Service.ImportWarehouseService;
@@ -26,6 +27,7 @@ public class ImportWarehouseController {
     @Autowired
     private ImportWarehouseService importWarehouseService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<ImportWarehouse> addImportWarehouse(@RequestBody ImportWarehouse importWarehouse) {
         try {
@@ -62,6 +64,7 @@ public class ImportWarehouseController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<ImportWarehouse> updateImportWarehouse(@PathVariable int id, @RequestBody ImportWarehouse importWarehouse) {
         try {
@@ -75,6 +78,7 @@ public class ImportWarehouseController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteImportWarehouse(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class ImportWarehouseController {
         }
     }
 }
+

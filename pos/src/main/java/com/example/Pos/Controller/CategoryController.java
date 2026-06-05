@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.Category;
 import com.example.Pos.Service.CategoryService;
@@ -26,6 +27,7 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<Category> addCategory(@RequestBody Category category) {
         try {
@@ -62,6 +64,7 @@ public class CategoryController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category) {
         try {
@@ -75,6 +78,7 @@ public class CategoryController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class CategoryController {
         }
     }
 }
+

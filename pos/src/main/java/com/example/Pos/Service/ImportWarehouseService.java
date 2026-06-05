@@ -45,8 +45,8 @@ public class ImportWarehouseService {
             if (importWarehouseDetails.getSupplier() != null) {
                 importWarehouse.setSupplier(importWarehouseDetails.getSupplier());
             }
-            if (importWarehouseDetails.getEmployee() != null) {
-                importWarehouse.setEmployee(importWarehouseDetails.getEmployee());
+            if (importWarehouseDetails.getUser() != null) {
+                importWarehouse.setUser(importWarehouseDetails.getUser());
             }
             return importWarehouseRepository.save(importWarehouse);
         }

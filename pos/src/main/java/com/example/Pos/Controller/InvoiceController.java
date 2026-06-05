@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.Invoice;
 import com.example.Pos.Service.InvoiceService;
@@ -26,6 +27,7 @@ public class InvoiceController {
     @Autowired
     private InvoiceService invoiceService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<Invoice> addInvoice(@RequestBody Invoice invoice) {
         try {
@@ -62,6 +64,7 @@ public class InvoiceController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Invoice> updateInvoice(@PathVariable int id, @RequestBody Invoice invoice) {
         try {
@@ -75,6 +78,7 @@ public class InvoiceController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteInvoice(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class InvoiceController {
         }
     }
 }
+

@@ -32,6 +32,6 @@ public class ImportWarehouse {
     private Supplier supplier;
     
     @ManyToOne
-    @JoinColumn(name = "employee_id")
-    private Employee employee;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

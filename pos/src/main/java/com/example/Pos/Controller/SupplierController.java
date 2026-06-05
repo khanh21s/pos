@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.Supplier;
 import com.example.Pos.Service.SupplierService;
@@ -26,6 +27,7 @@ public class SupplierController {
     @Autowired
     private SupplierService supplierService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<Supplier> addSupplier(@RequestBody Supplier supplier) {
         try {
@@ -62,6 +64,7 @@ public class SupplierController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Supplier> updateSupplier(@PathVariable int id, @RequestBody Supplier supplier) {
         try {
@@ -75,6 +78,7 @@ public class SupplierController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSupplier(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class SupplierController {
         }
     }
 }
+

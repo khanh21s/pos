@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.Promotion;
 import com.example.Pos.Service.PromotionService;
@@ -26,6 +27,7 @@ public class PromotionController {
     @Autowired
     private PromotionService promotionService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<Promotion> addPromotion(@RequestBody Promotion promotion) {
         try {
@@ -62,6 +64,7 @@ public class PromotionController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Promotion> updatePromotion(@PathVariable int id, @RequestBody Promotion promotion) {
         try {
@@ -75,6 +78,7 @@ public class PromotionController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePromotion(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class PromotionController {
         }
     }
 }
+

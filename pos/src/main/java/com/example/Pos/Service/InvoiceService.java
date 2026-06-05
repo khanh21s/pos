@@ -54,8 +54,8 @@ public class InvoiceService {
             if (invoiceDetails.getCustomer() != null) {
                 invoice.setCustomer(invoiceDetails.getCustomer());
             }
-            if (invoiceDetails.getEmployee() != null) {
-                invoice.setEmployee(invoiceDetails.getEmployee());
+            if (invoiceDetails.getUser() != null) {
+                invoice.setUser(invoiceDetails.getUser());
             }
             return invoiceRepository.save(invoice);
         }

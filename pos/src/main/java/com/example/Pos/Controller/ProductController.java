@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.Product;
 import com.example.Pos.Service.ProductService;
@@ -26,6 +27,7 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<Product> addProduct(@RequestBody Product product) {
         try {
@@ -62,6 +64,7 @@ public class ProductController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@PathVariable int id, @RequestBody Product product) {
         try {
@@ -75,6 +78,7 @@ public class ProductController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class ProductController {
         }
     }
 }
+

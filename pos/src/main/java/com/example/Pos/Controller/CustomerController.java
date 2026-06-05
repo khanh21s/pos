@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.Pos.Security.RequireRole;
 
 import com.example.Pos.Entity.Customer;
 import com.example.Pos.Service.CustomerService;
@@ -26,6 +27,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @RequireRole("ADMIN")
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
         try {
@@ -62,6 +64,7 @@ public class CustomerController {
         }
     }
 
+    @RequireRole("ADMIN")
     @PutMapping("/{id}")
     public ResponseEntity<Customer> updateCustomer(@PathVariable int id, @RequestBody Customer customer) {
         try {
@@ -75,6 +78,7 @@ public class CustomerController {
         }
     }
 
+    @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable int id) {
         try {
@@ -87,3 +91,4 @@ public class CustomerController {
         }
     }
 }
+
