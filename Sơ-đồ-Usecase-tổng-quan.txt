@@ -1,0 +1,232 @@
+Dưới đây là toàn bộ nội dung tài liệu "Sơ đồ Usecase tổng quan" đã được chuyển đổi từ hình ảnh và văn bản gốc thành mô tả dạng chữ chi tiết, hệ thống hóa rõ ràng. Tài liệu này đã được rà soát và tinh chỉnh các lỗi logic (như sửa lại mối quan hệ thừa/thiếu, chuẩn hóa tên gọi usecase đồng nhất giữa hình vẽ và mô tả bài toán).
+
+Bạn có thể sao chép nội dung này và lưu lại dưới dạng file `.txt`.
+
+---
+
+# TÀI LIỆU ĐẶC TẢ HỆ THỐNG USE CASE POS
+
+## I. SƠ ĐỒ USE CASE TỔNG QUAN
+
+Sơ đồ tổng quan phân chia hệ thống POS thành 2 nhóm chức năng chính dựa trên vai trò của người dùng.
+
+### 1. Tác nhân (Actors)
+
+* 
+**Nhân viên bán hàng:** Người trực tiếp đứng quầy, thao tác thường xuyên trên màn hình POS.
+
+
+* 
+**Quản trị viên (Admin):** Chủ cửa hàng hoặc quản lý. Admin có mối quan hệ kế thừa (generalization) từ Nhân viên, đồng nghĩa với việc Admin có quyền thực hiện toàn bộ các chức năng của Nhân viên bán hàng cộng thêm các chức năng quản trị chuyên sâu.
+
+
+
+### 2. Danh sách Use Case Tổng quan
+
+* **Nhóm nghiệp vụ Bán hàng (Dành cho cả Nhân viên & Admin):**
+* Thực hiện bán hàng.
+* Xử lý Đổi / Trả / Hủy đơn.
+* Tra cứu thông tin (tồn kho, hạng thành viên).
+
+
+* **Nhóm nghiệp vụ Quản trị (Dành riêng cho Admin):**
+* Quản lý Khách hàng & Khuyến mãi.
+* Quản lý Sản phẩm & Danh mục.
+* Lập phiếu Nhập kho.
+* Quản lý Đối tác (Nhà cung cấp & Nhân sự).
+* Xem Báo cáo thống kê.
+* Kiểm tra Nhật ký hệ thống (Audit Logs).
+
+
+
+---
+
+## II. SƠ ĐỒ USE CASE CHI TIẾT PHÂN HỆ BÁN HÀNG (POS)
+
+Phân hệ này xử lý các nghiệp vụ tại quầy thu ngân.
+
+### 1. Tác nhân
+
+* Nhân viên bán hàng và Admin.
+
+
+
+### 2. Mô tả các mối quan hệ Use Case
+
+* 
+**Usecase gốc: `Lập hóa đơn bán hàng**` 
+
+
+* Mối quan hệ `<<include>>`: `Thanh toán hóa đơn` (Bắt buộc phải thực hiện khi lập hóa đơn).
+* Usecase `Thanh toán hóa đơn` được mở rộng (`<<extend>>`) thành 2 hình thức: `Thanh toán bằng Tiền mặt` và `Thanh toán bằng Chuyển khoản/QR`.
+
+
+* Mối quan hệ `<<extend>>` (Các hành động tùy chọn khi lập hóa đơn):
+* `Treo đơn hàng` (Khi khách cần đi lấy thêm đồ hoặc chuyển ca).
+* `Hủy đơn hàng`.
+* `Áp dụng Voucher / Tích điểm`.
+* `Thêm mới khách hàng nhanh`.
+
+
+
+
+* 
+**Usecase gốc: `Quản lý đơn treo**` 
+
+
+* Mối quan hệ `<<extend>>`: `Khôi phục đơn treo (Gọi lại đơn)`.
+
+
+
+
+* **Usecase độc lập khác:**
+* 
+`Quản lý khách hàng thành viên` (Thêm mới, quản lý thông tin CRM trực tiếp từ màn hình bán hàng).
+
+
+* 
+`Xử lý đổi trả hàng`.
+
+
+* 
+`Tra cứu sản phẩm` (Kiểm tra nhanh giá và tồn kho).
+
+
+
+
+
+---
+
+## III. SƠ ĐỒ USE CASE CHI TIẾT QUẢN LÝ SẢN PHẨM & KHO HÀNG
+
+Phân hệ giúp quản lý vòng đời sản phẩm và lượng hàng tồn kho.
+
+### 1. Tác nhân
+
+* Admin.
+
+
+
+### 2. Mô tả các mối quan hệ Use Case
+
+* 
+**Usecase: `Quản lý thông tin sản phẩm**` 
+
+
+* Mối quan hệ `<<extend>>`: `Theo dõi lịch sử giá nhập` (Hệ thống tự động ghi lại biến động giá khi cập nhật).
+
+
+
+
+* 
+**Usecase: `Quản lý danh mục sản phẩm**` (Quản lý các nhóm hàng, loại hàng hóa độc lập).
+
+
+* 
+**Usecase: `Lập phiếu nhập kho**` 
+
+
+* Mối quan hệ `<<include>>`: `Quy đổi đơn vị tính` (Bắt buộc khi nhập hàng theo thùng/kiện lớn và bán theo vỉ/chiếc).
+* Mối quan hệ `<<extend>>`: `Thêm nhà cung cấp mới nhanh` (Tùy chọn tạo nhanh đối tác nếu chưa có sẵn trên hệ thống).
+
+
+
+---
+
+## IV. SƠ ĐỒ USE CASE CHI TIẾT QUẢN LÝ KHÁCH HÀNG & KHUYẾN MÃI
+
+Phân hệ chuyên sâu về chăm sóc khách hàng và marketing kích cầu.
+
+### 1. Tác nhân
+
+* Admin.
+
+
+
+### 2. Mô tả các mối quan hệ Use Case
+
+* 
+**Usecase: `Quản lý thông tin khách hàng**` 
+
+
+* Mối quan hệ `<<include>>`: `Cấu hình hạng thành viên & Tích điểm` (Thiết lập các quy tắc lên hạng tự động).
+
+
+* Mối quan hệ `<<extend>>`: `Xem lịch sử mua hàng của khách` (Tra cứu hành vi mua sắm khi cần).
+
+
+
+
+* 
+**Usecase: `Quản lý chương trình khuyến mãi**` 
+
+
+* Mối quan hệ `<<include>>`: `Phát hành Voucher / Mã giảm giá` (Tạo và quản lý mã áp dụng cho khách hàng).
+
+
+
+
+
+---
+
+## V. SƠ ĐỒ USE CASE CHI TIẾT GIÁM SÁT GIAO DỊCH & DASHBOARD BÁO CÁO
+
+Phân hệ giúp tối ưu hóa việc theo dõi chỉ số kinh doanh và phê duyệt vận hành.
+
+### 1. Tác nhân
+
+* Admin.
+
+
+
+### 2. Mô tả các mối quan hệ Use Case
+
+Nhằm tối ưu hóa luồng xử lý và sửa lỗi logic trùng lặp trong bản vẽ gốc, tính năng phê duyệt được phân tách như sau:
+
+* 
+**Usecase: `Tra cứu lịch sử giao dịch**` 
+
+
+* Mối quan hệ `<<extend>>`: `Duyệt yêu cầu hủy đơn / hoàn trả hàng` (Khi nhân viên quầy POS gửi yêu cầu Đổi/Trả/Hủy đơn, Admin sẽ vào lịch sử giao dịch để kiểm tra và phê duyệt chính thức).
+
+
+
+
+* 
+**Usecase: `Xem báo cáo thống kê (Dashboard)**` 
+
+
+* 
+*(Đã loại bỏ quan hệ mở rộng trùng lặp với duyệt đơn để tập trung thuần túy vào việc theo dõi tổng quan Doanh thu, Lợi nhuận và Hàng bán chạy)*.
+
+
+
+
+
+---
+
+## VI. SƠ ĐỒ USE CASE CHI TIẾT QUẢN TRỊ HỆ THỐNG & NHẬT KÝ BẢO MẬT
+
+Phân hệ vận hành nội bộ, bảo mật và truy vết sai sót.
+
+### 1. Tác nhân
+
+* Admin.
+
+
+
+### 2. Mô tả các mối quan hệ Use Case
+
+* 
+**Usecase: `Quản lý tài khoản nhân viên**` (Thêm, sửa, xóa thông tin tài khoản nội bộ).
+
+
+* 
+**Usecase: `Phân quyền hệ thống**` (Phân chia quyền hạn chi tiết cho từng nhóm chức năng/tài khoản).
+
+
+* 
+**Usecase: `Tra cứu nhật ký hệ thống (Audit Logs)**` 
+
+
+* Mối quan hệ `<<include>>`: `Truy vết thao tác người dùng` (Mỗi khi thực hiện tra cứu nhật ký, hệ thống bắt buộc phải hiển thị báo cáo truy vết chi tiết theo thời gian, tài khoản và hành động sửa đổi để phục vụ việc kiểm tra).

@@ -1,0 +1,510 @@
+### POS System API Testing File
+### Base URL
+@baseUrl = http://localhost:8081/api
+
+### ==================== CATEGORY ENDPOINTS ====================
+
+### Create Category
+POST {{baseUrl}}/categories
+Content-Type: application/json
+
+{
+  "name": "Electronics",
+  "description": "Electronic devices and accessories"
+}
+
+### Get All Categories
+GET {{baseUrl}}/categories
+
+### Get Category by ID
+GET {{baseUrl}}/categories/1
+
+### Update Category
+PUT {{baseUrl}}/categories/1
+Content-Type: application/json
+
+{
+  "name": "Electronics Updated",
+  "description": "Updated description"
+}
+
+### Delete Category
+DELETE {{baseUrl}}/categories/1
+
+---
+
+### ==================== PRODUCT ENDPOINTS ====================
+
+### Create Product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+  "name": "Laptop Dell XPS 13",
+  "sku": "DELL-XPS-13",
+  "price": 999.99,
+  "costPrice": 600.00,
+  "quantity": 50,
+  "category": {
+    "id": 1
+  },
+  "unit": "PCS",
+  "description": "Premium ultrabook laptop"
+}
+
+### Get All Products
+GET {{baseUrl}}/products
+
+### Get Product by ID
+GET {{baseUrl}}/products/1
+
+### Update Product
+PUT {{baseUrl}}/products/1
+Content-Type: application/json
+
+{
+  "name": "Laptop Dell XPS 13 - Updated",
+  "price": 1099.99,
+  "quantity": 45
+}
+
+### Delete Product
+DELETE {{baseUrl}}/products/1
+
+---
+
+### ==================== CUSTOMER ENDPOINTS ====================
+
+### Create Customer
+POST {{baseUrl}}/customers
+Content-Type: application/json
+
+{
+  "name": "Nguyen Van A",
+  "phone": "0987654321",
+  "email": "nguyenvana@email.com",
+  "address": "123 Main Street, Hanoi",
+  "membershipTier": "Gold",
+  "points": 0.0,
+  "totalSpent": 0.0
+}
+
+### Get All Customers
+GET {{baseUrl}}/customers
+
+### Get Customer by ID
+GET {{baseUrl}}/customers/1
+
+### Update Customer
+PUT {{baseUrl}}/customers/1
+Content-Type: application/json
+
+{
+  "name": "Nguyen Van A Updated",
+  "phone": "0987654322",
+  "membershipTier": "Platinum",
+  "points": 100.0,
+  "totalSpent": 5000.00
+}
+
+### Delete Customer
+DELETE {{baseUrl}}/customers/1
+
+---
+
+### ==================== EMPLOYEE ENDPOINTS ====================
+
+### Create Employee (Admin)
+POST {{baseUrl}}/employees
+Content-Type: application/json
+
+{
+  "name": "Tran Thi B",
+  "email": "tranthib@company.com",
+  "phone": "0912345678",
+  "role": "ADMIN",
+  "status": "ACTIVE"
+}
+
+### Create Employee (Staff)
+POST {{baseUrl}}/employees
+Content-Type: application/json
+
+{
+  "name": "Pham Van C",
+  "email": "phamvanc@company.com",
+  "phone": "0912345679",
+  "role": "STAFF",
+  "status": "ACTIVE"
+}
+
+### Get All Employees
+GET {{baseUrl}}/employees
+
+### Get Employee by ID
+GET {{baseUrl}}/employees/1
+
+### Update Employee
+PUT {{baseUrl}}/employees/1
+Content-Type: application/json
+
+{
+  "name": "Tran Thi B Updated",
+  "email": "tranthib.updated@company.com",
+  "status": "INACTIVE"
+}
+
+### Delete Employee
+DELETE {{baseUrl}}/employees/1
+
+---
+
+### ==================== SUPPLIER ENDPOINTS ====================
+
+### Create Supplier
+POST {{baseUrl}}/suppliers
+Content-Type: application/json
+
+{
+  "name": "ABC Distributor",
+  "contactPerson": "Hoang Van D",
+  "phone": "0343334444",
+  "email": "contact@abcdist.com",
+  "address": "456 Business Park, Hanoi",
+  "bankAccount": "1234567890"
+}
+
+### Get All Suppliers
+GET {{baseUrl}}/suppliers
+
+### Get Supplier by ID
+GET {{baseUrl}}/suppliers/1
+
+### Update Supplier
+PUT {{baseUrl}}/suppliers/1
+Content-Type: application/json
+
+{
+  "name": "ABC Distributor Updated",
+  "contactPerson": "Hoang Van E",
+  "bankAccount": "9876543210"
+}
+
+### Delete Supplier
+DELETE {{baseUrl}}/suppliers/1
+
+---
+
+### ==================== PROMOTION ENDPOINTS ====================
+
+### Create Promotion (Discount Percent)
+POST {{baseUrl}}/promotions
+Content-Type: application/json
+
+{
+  "code": "SUMMER2026",
+  "description": "Summer sale - 20% off",
+  "discountPercent": 20.0,
+  "discountAmount": 0.0,
+  "usageLimit": 100,
+  "usedCount": 0,
+  "startDate": "2026-06-01T00:00:00",
+  "endDate": "2026-08-31T23:59:59",
+  "status": "ACTIVE"
+}
+
+### Create Promotion (Discount Amount)
+POST {{baseUrl}}/promotions
+Content-Type: application/json
+
+{
+  "code": "FLAT50",
+  "description": "Flat 50 discount",
+  "discountPercent": 0.0,
+  "discountAmount": 50.0,
+  "usageLimit": 50,
+  "usedCount": 0,
+  "startDate": "2026-06-01T00:00:00",
+  "endDate": "2026-12-31T23:59:59",
+  "status": "ACTIVE"
+}
+
+### Get All Promotions
+GET {{baseUrl}}/promotions
+
+### Get Promotion by ID
+GET {{baseUrl}}/promotions/1
+
+### Update Promotion
+PUT {{baseUrl}}/promotions/1
+Content-Type: application/json
+
+{
+  "code": "SUMMER2026UPDATED",
+  "status": "INACTIVE"
+}
+
+### Delete Promotion
+DELETE {{baseUrl}}/promotions/1
+
+---
+
+### ==================== INVOICE ENDPOINTS ====================
+
+### Create Invoice
+POST {{baseUrl}}/invoices
+Content-Type: application/json
+
+{
+  "invoiceNumber": "INV-001",
+  "createdAt": "2026-06-05T11:00:00",
+  "subtotal": 2000.00,
+  "discountAmount": 100.00,
+  "totalAmount": 1900.00,
+  "paymentMethod": "CASH",
+  "status": "COMPLETED",
+  "customer": {
+    "id": 1
+  },
+  "employee": {
+    "id": 1
+  }
+}
+
+### Get All Invoices
+GET {{baseUrl}}/invoices
+
+### Get Invoice by ID
+GET {{baseUrl}}/invoices/1
+
+### Update Invoice Status
+PUT {{baseUrl}}/invoices/1
+Content-Type: application/json
+
+{
+  "status": "COMPLETED",
+  "paymentMethod": "BANK_TRANSFER"
+}
+
+### Suspend Invoice (Treo don)
+PUT {{baseUrl}}/invoices/1
+Content-Type: application/json
+
+{
+  "status": "SUSPENDED"
+}
+
+### Cancel Invoice (Huy don)
+PUT {{baseUrl}}/invoices/1
+Content-Type: application/json
+
+{
+  "status": "CANCELLED"
+}
+
+### Delete Invoice
+DELETE {{baseUrl}}/invoices/1
+
+---
+
+### ==================== INVOICE DETAIL ENDPOINTS ====================
+
+### Create Invoice Detail (Line Item)
+POST {{baseUrl}}/invoices
+Content-Type: application/json
+
+{
+  "quantity": 2,
+  "unitPrice": 999.99,
+  "totalPrice": 1999.98,
+  "invoice": {
+    "id": 1
+  },
+  "product": {
+    "id": 1
+  }
+}
+
+### Get All Invoice Details
+GET {{baseUrl}}/invoices
+
+### Get Invoice Detail by ID
+GET {{baseUrl}}/invoices/1
+
+### Update Invoice Detail
+PUT {{baseUrl}}/invoices/1
+Content-Type: application/json
+
+{
+  "quantity": 3,
+  "unitPrice": 999.99,
+  "totalPrice": 2999.97
+}
+
+### Delete Invoice Detail
+DELETE {{baseUrl}}/invoices/1
+
+---
+
+### ==================== IMPORT WAREHOUSE ENDPOINTS ====================
+
+### Create Import Warehouse
+POST {{baseUrl}}/import-warehouses
+Content-Type: application/json
+
+{
+  "importNumber": "IMP-001",
+  "createdAt": "2026-06-05T10:00:00",
+  "totalAmount": 15000.00,
+  "status": "COMPLETED",
+  "supplier": {
+    "id": 1
+  },
+  "employee": {
+    "id": 1
+  }
+}
+
+### Get All Import Warehouses
+GET {{baseUrl}}/import-warehouses
+
+### Get Import Warehouse by ID
+GET {{baseUrl}}/import-warehouses/1
+
+### Update Import Warehouse
+PUT {{baseUrl}}/import-warehouses/1
+Content-Type: application/json
+
+{
+  "status": "PENDING"
+}
+
+### Delete Import Warehouse
+DELETE {{baseUrl}}/import-warehouses/1
+
+---
+
+### ==================== SAMPLE WORKFLOW: COMPLETE SALES TRANSACTION ====================
+
+### Step 1: Create Customer
+POST {{baseUrl}}/customers
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "phone": "0975555555",
+  "email": "john@example.com",
+  "address": "789 Elm Street, Hanoi",
+  "membershipTier": "Silver",
+  "points": 0.0,
+  "totalSpent": 0.0
+}
+
+### Step 2: Create Invoice
+POST {{baseUrl}}/invoices
+Content-Type: application/json
+
+{
+  "invoiceNumber": "INV-20260605-001",
+  "createdAt": "2026-06-05T14:30:00",
+  "subtotal": 3999.98,
+  "discountAmount": 400.00,
+  "totalAmount": 3599.98,
+  "paymentMethod": "CASH",
+  "status": "COMPLETED",
+  "customer": {
+    "id": 1
+  },
+  "employee": {
+    "id": 2
+  }
+}
+
+### Step 3: Apply Promotion (Update Invoice with discount)
+PUT {{baseUrl}}/invoices/1
+Content-Type: application/json
+
+{
+  "discountAmount": 500.00,
+  "totalAmount": 3499.98
+}
+
+### Step 4: Complete Payment
+PUT {{baseUrl}}/invoices/1
+Content-Type: application/json
+
+{
+  "status": "COMPLETED",
+  "paymentMethod": "CASH"
+}
+
+---
+
+### ==================== SAMPLE WORKFLOW: IMPORT WAREHOUSE ====================
+
+### Step 1: Create Supplier
+POST {{baseUrl}}/suppliers
+Content-Type: application/json
+
+{
+  "name": "Tech Wholesale Co",
+  "contactPerson": "Le Van F",
+  "phone": "0343334445",
+  "email": "sales@techwholesale.com",
+  "address": "789 Industrial Zone, Hanoi",
+  "bankAccount": "1111222233334444"
+}
+
+### Step 2: Create Import Warehouse
+POST {{baseUrl}}/import-warehouses
+Content-Type: application/json
+
+{
+  "importNumber": "IMP-20260605-001",
+  "createdAt": "2026-06-05T09:00:00",
+  "totalAmount": 25000.00,
+  "status": "PENDING",
+  "supplier": {
+    "id": 1
+  },
+  "employee": {
+    "id": 1
+  }
+}
+
+### Step 3: Complete Import
+PUT {{baseUrl}}/import-warehouses/1
+Content-Type: application/json
+
+{
+  "status": "COMPLETED"
+}
+
+---
+
+### ==================== INSTRUCTIONS ====================
+###
+### How to use this file:
+###
+### 1. Install REST Client extension in VS Code
+###    - Go to Extensions (Ctrl+Shift+X)
+###    - Search for "REST Client"
+###    - Install by Huachao Mao
+###
+### 2. Open this file in VS Code
+###
+### 3. Click "Send Request" above any request to test it
+###
+### 4. Response will appear in a new tab
+###
+### 5. Change IDs (1, 2, etc.) as needed based on your data
+###
+### Notes:
+### - Make sure your Spring Boot application is running on port 8081
+### - Create a Product first, then reference it in Invoice Details
+### - Create a Customer before creating an Invoice
+### - Create a Supplier before creating an Import Warehouse
+### - Status values: ACTIVE, INACTIVE, COMPLETED, PENDING, CANCELLED, SUSPENDED
+### - Payment Methods: CASH, BANK_TRANSFER
+### - Employee Roles: ADMIN, STAFF
+### - Membership Tiers: Bronze, Silver, Gold, Platinum
