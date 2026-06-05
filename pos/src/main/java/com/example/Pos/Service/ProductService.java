@@ -39,21 +39,34 @@ public class ProductService {
             if (productDetails.getSku() != null) {
                 product.setSku(productDetails.getSku());
             }
-            if (productDetails.getPrice() > 0) {
-                product.setPrice(productDetails.getPrice());
+            if (productDetails.getBarcode() != null) {
+                product.setBarcode(productDetails.getBarcode());
             }
-            if (productDetails.getCostPrice() > 0) {
-                product.setCostPrice(productDetails.getCostPrice());
+            if (productDetails.getSellPrice() > 0) {
+                product.setSellPrice(productDetails.getSellPrice());
             }
-            if (productDetails.getQuantity() >= 0) {
-                product.setQuantity(productDetails.getQuantity());
+            if (productDetails.getImportPrice() > 0) {
+                product.setImportPrice(productDetails.getImportPrice());
+            }
+            if (productDetails.getStock() >= 0) {
+                product.setStock(productDetails.getStock());
+            }
+            if (productDetails.getMinStock() >= 0) {
+                product.setMinStock(productDetails.getMinStock());
             }
             if (productDetails.getCategory() != null) {
                 product.setCategory(productDetails.getCategory());
             }
-            if (productDetails.getUnit() != null) {
-                product.setUnit(productDetails.getUnit());
+            if (productDetails.getImportUnit() != null) {
+                product.setImportUnit(productDetails.getImportUnit());
             }
+            if (productDetails.getSellUnit() != null) {
+                product.setSellUnit(productDetails.getSellUnit());
+            }
+            if (productDetails.getConversionRate() > 0) {
+                product.setConversionRate(productDetails.getConversionRate());
+            }
+            product.setActive(productDetails.isActive());
             if (productDetails.getDescription() != null) {
                 product.setDescription(productDetails.getDescription());
             }

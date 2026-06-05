@@ -10,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -21,14 +23,26 @@ public class Product {
     
     private String name;
     private String sku;
-    private double price;
-    private double costPrice;
-    private int quantity;
+    private String barcode;
+    
+    private double importPrice;
+    private double sellPrice;
+    
+    private String importUnit;
+    private String sellUnit;
+    private int conversionRate;
+    
+    private int stock;
+    private int minStock;
     
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
     
-    private String unit;
     private String description;
+    private boolean isActive;
+    
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
 }
