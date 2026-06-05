@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     
     private String name;
     private String phone;
     private String email;
     private String address;
     private String membershipTier;  // Bronze, Silver, Gold, Platinum
-    private double points;
-    private double totalSpent;
+    private Double points;
+    private Double totalSpent;
 }

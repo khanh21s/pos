@@ -17,6 +17,9 @@ public class CustomerService {
 
     @Transactional
     public Customer addCustomer(Customer customer) {
+        if (customer.getPoints() == null) customer.setPoints(0.0);
+        if (customer.getTotalSpent() == null) customer.setTotalSpent(0.0);
+        if (customer.getMembershipTier() == null) customer.setMembershipTier("ĐỒNG");
         return customerRepository.save(customer);
     }
 
@@ -48,10 +51,10 @@ public class CustomerService {
             if (customerDetails.getMembershipTier() != null) {
                 customer.setMembershipTier(customerDetails.getMembershipTier());
             }
-            if (customerDetails.getPoints() >= 0) {
+            if (customerDetails.getPoints() != null && customerDetails.getPoints() >= 0) {
                 customer.setPoints(customerDetails.getPoints());
             }
-            if (customerDetails.getTotalSpent() >= 0) {
+            if (customerDetails.getTotalSpent() != null && customerDetails.getTotalSpent() >= 0) {
                 customer.setTotalSpent(customerDetails.getTotalSpent());
             }
             return customerRepository.save(customer);

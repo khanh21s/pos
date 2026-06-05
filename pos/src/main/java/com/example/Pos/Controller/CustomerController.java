@@ -27,7 +27,7 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    @RequireRole("ADMIN")
+    // Bỏ @RequireRole("ADMIN") để thu ngân có thể thêm khách hàng
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
         try {
@@ -91,4 +91,3 @@ public class CustomerController {
         }
     }
 }
-

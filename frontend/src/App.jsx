@@ -10,12 +10,7 @@ const Dashboard = () => (
   </div>
 );
 
-const Pos = () => (
-  <div style={{ padding: '2rem', textAlign: 'center', background: '#f8fafc', color: '#0f172a', minHeight: '100vh' }}>
-    <h1>POS Screen</h1>
-    <p>High contrast, fast operation mode.</p>
-  </div>
-);
+import Pos from './pages/Pos';
 
 function App() {
   return (
