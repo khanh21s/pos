@@ -17,6 +17,20 @@ public class ProductService {
 
     @Transactional
     public Product addProduct(Product product) {
+        // Enforce business rule: new products always start with 0 stock
+        product.setStock(0);
+        if (product.getMinStock() == null || product.getMinStock() == 0) {
+            product.setMinStock(5);
+        }
+        // Auto-generate SKU and Barcode if empty
+        if (product.getSku() == null || product.getSku().trim().isEmpty()) {
+            product.setSku("SP-" + System.currentTimeMillis());
+        }
+        if (product.getBarcode() == null || product.getBarcode().trim().isEmpty()) {
+            product.setBarcode("893" + (int)(Math.random() * 100000000));
+        }
+
+        product.setCreatedAt(java.time.LocalDateTime.now());
         return productRepository.save(product);
     }
 
@@ -42,16 +56,20 @@ public class ProductService {
             if (productDetails.getBarcode() != null) {
                 product.setBarcode(productDetails.getBarcode());
             }
-            if (productDetails.getSellPrice() > 0) {
+            if (productDetails.getImage() != null) {
+                product.setImage(productDetails.getImage());
+            }
+            if (productDetails.getSellPrice() != null && productDetails.getSellPrice() > 0) {
                 product.setSellPrice(productDetails.getSellPrice());
             }
-            if (productDetails.getImportPrice() > 0) {
+            if (productDetails.getImportPrice() != null && productDetails.getImportPrice() > 0) {
                 product.setImportPrice(productDetails.getImportPrice());
             }
-            if (productDetails.getStock() >= 0) {
+            // Admin should not update stock directly here, but if needed for correction we keep it
+            if (productDetails.getStock() != null && productDetails.getStock() >= 0) {
                 product.setStock(productDetails.getStock());
             }
-            if (productDetails.getMinStock() >= 0) {
+            if (productDetails.getMinStock() != null && productDetails.getMinStock() >= 0) {
                 product.setMinStock(productDetails.getMinStock());
             }
             if (productDetails.getCategory() != null) {
@@ -63,10 +81,12 @@ public class ProductService {
             if (productDetails.getSellUnit() != null) {
                 product.setSellUnit(productDetails.getSellUnit());
             }
-            if (productDetails.getConversionRate() > 0) {
+            if (productDetails.getConversionRate() != null && productDetails.getConversionRate() > 0) {
                 product.setConversionRate(productDetails.getConversionRate());
             }
-            product.setActive(productDetails.isActive());
+            if (productDetails.getIsActive() != null) {
+                product.setIsActive(productDetails.getIsActive());
+            }
             if (productDetails.getDescription() != null) {
                 product.setDescription(productDetails.getDescription());
             }

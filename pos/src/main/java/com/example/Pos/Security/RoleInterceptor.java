@@ -53,7 +53,7 @@ public class RoleInterceptor implements HandlerInterceptor {
             String userRole = decodedJWT.getClaim("role").asString();
             
             // "ADMIN" has full access, so if required role is STAFF but user is ADMIN, it's allowed.
-            if ("ADMIN".equals(requiredRole) && !"ADMIN".equals(userRole)) {
+            if ("ADMIN".equalsIgnoreCase(requiredRole) && !"ADMIN".equalsIgnoreCase(userRole)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Access Denied: Requires ADMIN role");
                 return false;
             }

@@ -97,20 +97,26 @@ public class OrderService {
                 Product product = productRepository.findById(detailDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại: " + detailDTO.getProductId()));
                 
+                boolean isImportUnit = Boolean.TRUE.equals(detailDTO.getIsImportUnit());
+                int conversionRate = product.getConversionRate() != null && product.getConversionRate() > 0 
+                                     ? product.getConversionRate() : 1;
+                int realQuantity = isImportUnit ? detailDTO.getQuantity() * conversionRate : detailDTO.getQuantity();
+
                 // Deduct stock only if COMPLETED
                 if ("COMPLETED".equalsIgnoreCase(dto.getStatus())) {
-                    if (product.getStock() < detailDTO.getQuantity()) {
+                    if (product.getStock() < realQuantity) {
                         throw new RuntimeException("Sản phẩm " + product.getName() + " không đủ tồn kho! Kho còn: " + product.getStock());
                     }
-                    product.setStock(product.getStock() - detailDTO.getQuantity());
+                    product.setStock(product.getStock() - realQuantity);
                     productRepository.save(product);
                 }
 
                 OrderDetail detail = new OrderDetail();
                 detail.setOrder(savedOrder);
                 detail.setProduct(product);
-                detail.setQuantity(detailDTO.getQuantity());
+                detail.setQuantity(detailDTO.getQuantity()); // Save exactly what UI showed
                 detail.setSellPrice(detailDTO.getSellPrice());
+                detail.setIsImportUnit(isImportUnit);
                 
                 orderDetailRepository.save(detail);
             }
@@ -162,20 +168,26 @@ public class OrderService {
                 Product product = productRepository.findById(detailDTO.getProductId())
                     .orElseThrow(() -> new RuntimeException("Sản phẩm không tồn tại: " + detailDTO.getProductId()));
                 
+                boolean isImportUnit = Boolean.TRUE.equals(detailDTO.getIsImportUnit());
+                int conversionRate = product.getConversionRate() != null && product.getConversionRate() > 0 
+                                     ? product.getConversionRate() : 1;
+                int realQuantity = isImportUnit ? detailDTO.getQuantity() * conversionRate : detailDTO.getQuantity();
+
                 // Only deduct stock if transitioning to COMPLETED
                 if (isNowCompleted && wasDraft) {
-                    if (product.getStock() < detailDTO.getQuantity()) {
+                    if (product.getStock() < realQuantity) {
                         throw new RuntimeException("Sản phẩm " + product.getName() + " không đủ tồn kho! Kho còn: " + product.getStock());
                     }
-                    product.setStock(product.getStock() - detailDTO.getQuantity());
+                    product.setStock(product.getStock() - realQuantity);
                     productRepository.save(product);
                 }
 
                 OrderDetail detail = new OrderDetail();
                 detail.setOrder(savedOrder);
                 detail.setProduct(product);
-                detail.setQuantity(detailDTO.getQuantity());
+                detail.setQuantity(detailDTO.getQuantity()); // Save exactly what UI showed
                 detail.setSellPrice(detailDTO.getSellPrice());
+                detail.setIsImportUnit(isImportUnit);
                 
                 orderDetailRepository.save(detail);
             }

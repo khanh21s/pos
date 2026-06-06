@@ -19,28 +19,29 @@ import java.time.LocalDateTime;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     
     private String name;
     private String sku;
     private String barcode;
+    private String image;
     
-    private double importPrice;
-    private double sellPrice;
+    private Double importPrice;
+    private Double sellPrice;
     
     private String importUnit;
     private String sellUnit;
-    private int conversionRate;
+    private Integer conversionRate;
     
-    private int stock;
-    private int minStock;
+    private Integer stock;
+    private Integer minStock;
     
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
     
     private String description;
-    private boolean isActive;
+    private Boolean isActive;
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

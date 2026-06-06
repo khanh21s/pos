@@ -39,12 +39,32 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
+    public ResponseEntity<?> getAllProducts(jakarta.servlet.http.HttpServletRequest request) {
         try {
             List<Product> products = productService.getAllProducts();
             if (products.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+
+            String role = (String) request.getAttribute("role");
+            if (role != null && role.equalsIgnoreCase("STAFF")) {
+                List<com.example.Pos.DTO.ProductResponseDTO> dtoList = products.stream()
+                    .map(p -> new com.example.Pos.DTO.ProductResponseDTO(
+                        p.getId(),
+                        p.getName(),
+                        p.getBarcode(),
+                        p.getSku(),
+                        p.getImage(),
+                        p.getSellPrice(),
+                        p.getCategory() != null ? p.getCategory().getName() : null,
+                        p.getCategory() != null ? p.getCategory().getId() : null,
+                        p.getImportUnit(),
+                        p.getSellUnit(),
+                        p.getConversionRate()
+                    )).collect(java.util.stream.Collectors.toList());
+                return new ResponseEntity<>(dtoList, HttpStatus.OK);
+            }
+
             return new ResponseEntity<>(products, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

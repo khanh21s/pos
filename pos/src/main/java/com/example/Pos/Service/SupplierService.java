@@ -17,15 +17,16 @@ public class SupplierService {
 
     @Transactional
     public Supplier addSupplier(Supplier supplier) {
+        supplier.setCreatedAt(java.time.LocalDateTime.now());
         return supplierRepository.save(supplier);
     }
 
     public List<Supplier> getAllSuppliers() {
-        return supplierRepository.findAll();
+        return supplierRepository.findByDeletedAtIsNull();
     }
 
     public Optional<Supplier> getSupplierById(int id) {
-        return supplierRepository.findById(id);
+        return supplierRepository.findById(id).filter(s -> s.getDeletedAt() == null);
     }
 
     @Transactional
@@ -33,24 +34,21 @@ public class SupplierService {
         Optional<Supplier> existingSupplier = supplierRepository.findById(id);
         if (existingSupplier.isPresent()) {
             Supplier supplier = existingSupplier.get();
+            if (supplier.getDeletedAt() != null) return null; // Cannot update deleted supplier
+            
             if (supplierDetails.getName() != null) {
                 supplier.setName(supplierDetails.getName());
-            }
-            if (supplierDetails.getContactPerson() != null) {
-                supplier.setContactPerson(supplierDetails.getContactPerson());
             }
             if (supplierDetails.getPhone() != null) {
                 supplier.setPhone(supplierDetails.getPhone());
             }
-            if (supplierDetails.getEmail() != null) {
-                supplier.setEmail(supplierDetails.getEmail());
-            }
             if (supplierDetails.getAddress() != null) {
                 supplier.setAddress(supplierDetails.getAddress());
             }
-            if (supplierDetails.getBankAccount() != null) {
-                supplier.setBankAccount(supplierDetails.getBankAccount());
+            if (supplierDetails.getNote() != null) {
+                supplier.setNote(supplierDetails.getNote());
             }
+            supplier.setUpdatedAt(java.time.LocalDateTime.now());
             return supplierRepository.save(supplier);
         }
         return null;
@@ -58,9 +56,14 @@ public class SupplierService {
 
     @Transactional
     public boolean deleteSupplier(int id) {
-        if (supplierRepository.existsById(id)) {
-            supplierRepository.deleteById(id);
-            return true;
+        Optional<Supplier> existingSupplier = supplierRepository.findById(id);
+        if (existingSupplier.isPresent()) {
+            Supplier supplier = existingSupplier.get();
+            if (supplier.getDeletedAt() == null) {
+                supplier.setDeletedAt(java.time.LocalDateTime.now());
+                supplierRepository.save(supplier);
+                return true;
+            }
         }
         return false;
     }

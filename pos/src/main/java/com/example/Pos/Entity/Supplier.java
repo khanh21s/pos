@@ -15,12 +15,14 @@ import lombok.NoArgsConstructor;
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     
     private String name;
-    private String contactPerson;
     private String phone;
-    private String email;
     private String address;
-    private String bankAccount;
+    private String note;
+    
+    private java.time.LocalDateTime createdAt;
+    private java.time.LocalDateTime updatedAt;
+    private java.time.LocalDateTime deletedAt;
 }

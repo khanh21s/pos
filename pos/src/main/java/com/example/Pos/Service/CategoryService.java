@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.Pos.Entity.Category;
 import com.example.Pos.Repository.CategoryRepository;
+import com.example.Pos.Repository.ProductRepository;
 
 @Service
 public class CategoryService {
@@ -15,8 +16,12 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @Transactional
     public Category addCategory(Category category) {
+        category.setCreatedAt(java.time.LocalDateTime.now());
         return categoryRepository.save(category);
     }
 
@@ -46,6 +51,9 @@ public class CategoryService {
 
     @Transactional
     public boolean deleteCategory(int id) {
+        if (productRepository.existsByCategoryId(id)) {
+            throw new IllegalStateException("Cannot delete category because it has products associated with it.");
+        }
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
             return true;

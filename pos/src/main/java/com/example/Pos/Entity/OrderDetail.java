@@ -14,6 +14,7 @@ public class OrderDetail {
     private int id;
     private int quantity;
     private double sellPrice;
+    private Boolean isImportUnit;
     @ManyToOne
     @JoinColumn(name = "order_id")
     @com.fasterxml.jackson.annotation.JsonBackReference

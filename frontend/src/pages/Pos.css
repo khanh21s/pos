@@ -116,25 +116,41 @@
 
 /* CHẶNG 5: HEADER ACTIONS (DRAFT ORDERS) */
 .header-actions {
-  position: relative;
   display: flex;
   align-items: center;
+  position: relative;
+  gap: 10px;
 }
 
 .btn-draft-list {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 15px;
   display: flex;
   align-items: center;
-  background-color: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  padding: 8px 16px;
-  border-radius: 8px;
+  gap: 8px;
   cursor: pointer;
-  position: relative;
-  transition: background-color 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s;
 }
 
-.btn-draft-list:hover {
-  background-color: #e2e8f0;
+.pos-logout-btn {
+  background: white;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.2s;
+}
+
+.pos-logout-btn:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
 }
 
 .draft-badge {
@@ -380,6 +396,38 @@
   max-height: 200px;
   overflow-y: auto;
   z-index: 60;
+}
+
+.add-customer-modal .modal-body {
+  padding: 20px 24px;
+}
+
+/* UNIT TOGGLE */
+.unit-toggle {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.unit-toggle.sỉ {
+  background-color: #ebf5ff;
+  color: #3b82f6;
+  border-color: #bfdbfe;
+}
+
+.unit-toggle.lẻ {
+  background-color: #fdf2f8;
+  color: #ec4899;
+  border-color: #fbcfe8;
+}
+
+.unit-toggle:hover {
+  filter: brightness(0.95);
+  transform: scale(1.05);
 }
 
 .crm-dropdown-item {

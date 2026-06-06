@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import axios from 'axios';
-import { Search, ShoppingCart, Package, Trash2, Plus, Minus, User, Phone, CheckCircle2, Clock, XCircle, PauseCircle, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Search, ShoppingCart, Package, Trash2, Plus, Minus, User, Phone, CheckCircle2, Clock, XCircle, PauseCircle, Award, LogOut } from 'lucide-react';
 import './Pos.css';
 
 const Pos = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +48,12 @@ const Pos = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    navigate('/login');
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -58,7 +66,10 @@ const Pos = () => {
           name: p.name,
           sellPrice: p.sellPrice,
           image: p.image || null,
-          barcode: p.barcode
+          barcode: p.barcode,
+          conversionRate: p.conversionRate || 1,
+          importUnit: p.importUnit || 'Sỉ',
+          sellUnit: p.sellUnit || 'Lẻ'
         }));
         setProducts(safeData);
 
@@ -128,13 +139,26 @@ const Pos = () => {
       if (existingProduct) {
         return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
       }
-      return [...prev, { ...product, quantity: 1 }];
+      return [...prev, { ...product, baseSellPrice: product.sellPrice, quantity: 1, isImportUnit: false }];
     });
     setSearchQuery('');
     setDebouncedQuery('');
     setIsDropdownOpen(false);
     setSelectedIndex(-1);
     if (searchInputRef.current) searchInputRef.current.focus();
+  };
+
+  const toggleUnit = (id) => {
+    setCart(prev => prev.map(item => {
+      if (item.id === id) {
+        const newIsImportUnit = !item.isImportUnit;
+        const newPrice = newIsImportUnit 
+            ? item.baseSellPrice * item.conversionRate
+            : item.baseSellPrice;
+        return { ...item, isImportUnit: newIsImportUnit, sellPrice: newPrice };
+      }
+      return item;
+    }));
   };
 
   const updateQuantity = (id, newQuantityStr) => {
@@ -306,7 +330,8 @@ const Pos = () => {
       orderDetails: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity,
-        sellPrice: item.sellPrice
+        sellPrice: item.sellPrice,
+        isImportUnit: item.isImportUnit || false
       }))
     };
   };
@@ -515,6 +540,9 @@ const Pos = () => {
                 )}
               </div>
             )}
+            <button className="pos-logout-btn" onClick={handleLogout} title="Đăng xuất">
+              <LogOut size={24} color="#e53e3e" />
+            </button>
           </div>
         </div>
         
@@ -609,9 +637,19 @@ const Pos = () => {
               <div key={item.id} className="cart-item">
                 <div className="cart-item-header">
                   <span className="cart-item-name">{item.name}</span>
-                  <button className="btn-remove" onClick={() => removeItem(item.id)}>
-                    <Trash2 size={18} />
-                  </button>
+                  <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                    <button 
+                      className={`unit-toggle ${item.isImportUnit ? 'sỉ' : 'lẻ'}`}
+                      onClick={() => toggleUnit(item.id)}
+                      title="Bấm để đổi đơn vị"
+                      style={{padding: '4px 8px', fontSize: '11px'}}
+                    >
+                      {item.isImportUnit ? `📦 ${item.importUnit || 'Thùng'}` : `🥫 ${item.sellUnit || 'Lẻ'}`}
+                    </button>
+                    <button className="btn-remove" onClick={() => removeItem(item.id)}>
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                 </div>
                 <div className="cart-item-details">
                   <div className="cart-item-price-unit">{formatPrice(item.sellPrice)}</div>

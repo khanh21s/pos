@@ -5,4 +5,5 @@ public class OrderDetailDTO {
     private int productId;
     private int quantity;
     private double sellPrice;
+    private Boolean isImportUnit;
 }
