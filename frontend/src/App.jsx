@@ -14,23 +14,47 @@ import PromotionManagement from './pages/PromotionManagement';
 import Users from './pages/Users';
 import AuditLogs from './pages/AuditLogs';
 
+const isAuthenticated = () => {
+  const token = localStorage.getItem('token');
+  return Boolean(token);
+};
+
+const getRedirectAfterLogin = () => {
+  const userData = localStorage.getItem('user');
+  if (!userData) return '/dashboard';
+
+  try {
+    const user = JSON.parse(userData);
+    return user.role === 'ADMIN' ? '/dashboard' : '/pos';
+  } catch (error) {
+    return '/dashboard';
+  }
+};
+
+const RequireAuth = ({ children }) => {
+  return isAuthenticated() ? children : <Navigate to="/login" replace />;
+};
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/products" element={<ProductManagement />} />
-        <Route path="/purchase-orders" element={<PurchaseOrder />} />
-        <Route path="/suppliers" element={<SupplierManagement />} />
-        <Route path="/customers" element={<CustomerManagement />} />
-        <Route path="/promotions" element={<PromotionManagement />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/audit-logs" element={<AuditLogs />} />
-        <Route path="/pos" element={<Pos />} />
-        <Route path="/orders/history" element={<OrderHistory />} />
+        <Route
+          path="/login"
+          element={isAuthenticated() ? <Navigate to={getRedirectAfterLogin()} replace /> : <Login />}
+        />
+        <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+        <Route path="/products" element={<RequireAuth><ProductManagement /></RequireAuth>} />
+        <Route path="/purchase-orders" element={<RequireAuth><PurchaseOrder /></RequireAuth>} />
+        <Route path="/suppliers" element={<RequireAuth><SupplierManagement /></RequireAuth>} />
+        <Route path="/customers" element={<RequireAuth><CustomerManagement /></RequireAuth>} />
+        <Route path="/promotions" element={<RequireAuth><PromotionManagement /></RequireAuth>} />
+        <Route path="/users" element={<RequireAuth><Users /></RequireAuth>} />
+        <Route path="/audit-logs" element={<RequireAuth><AuditLogs /></RequireAuth>} />
+        <Route path="/pos" element={<RequireAuth><Pos /></RequireAuth>} />
+        <Route path="/orders/history" element={<RequireAuth><OrderHistory /></RequireAuth>} />
         {/* Default route */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to={isAuthenticated() ? getRedirectAfterLogin() : '/login'} replace />} />
       </Routes>
     </BrowserRouter>
   );
