@@ -27,6 +27,36 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/history")
+    public ResponseEntity<?> getOrdersHistory() {
+        try {
+            List<Order> orders = orderService.getAllOrdersHistory();
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/{id}/refund")
+    public ResponseEntity<?> refundOrder(@PathVariable int id, jakarta.servlet.http.HttpServletRequest request) {
+        try {
+            Integer userId = (Integer) request.getAttribute("userId");
+            if (userId == null) {
+                return new ResponseEntity<>("Unauthorized", HttpStatus.UNAUTHORIZED);
+            }
+            Order refundedOrder = orderService.refundOrder(id, userId);
+            return new ResponseEntity<>(refundedOrder, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Lỗi server nội bộ");
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO request) {
         try {

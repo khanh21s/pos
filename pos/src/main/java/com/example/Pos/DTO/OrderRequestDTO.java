@@ -10,6 +10,8 @@ public class OrderRequestDTO {
     private double changeAmount;
     private int usedPoints;
     private double discountAmount;
+    private Long promotionId;
+    private double promotionDiscount;
     private String status;
     private String paymentMethod;
     private List<OrderDetailDTO> orderDetails;

@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example.Pos.Repository.PurchaseOrderRepository;
+
 @Service
 public class DashboardService {
 
@@ -27,6 +29,9 @@ public class DashboardService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private PurchaseOrderRepository purchaseOrderRepository;
 
     public DashboardDTO getDashboardData(String range) {
         LocalDateTime startDate = getStartDate(range);
@@ -44,9 +49,15 @@ public class DashboardService {
         Double discountAmount = orderRepository.sumDiscountAmount(startDate);
         if (discountAmount == null) discountAmount = 0.0;
 
-        Double grossProfit = grossProfitBase - discountAmount;
+        Double promotionDiscount = orderRepository.sumPromotionDiscount(startDate);
+        if (promotionDiscount == null) promotionDiscount = 0.0;
 
-        DashboardKPI kpi = new DashboardKPI(totalOrders, totalRevenue, grossProfit);
+        Double grossProfit = grossProfitBase - discountAmount - promotionDiscount;
+
+        Double totalImportCost = purchaseOrderRepository.calculateTotalImportCost(startDate);
+        if (totalImportCost == null) totalImportCost = 0.0;
+
+        DashboardKPI kpi = new DashboardKPI(totalOrders, totalRevenue, grossProfit, totalImportCost);
 
         // 2. Top 10 Products
         List<TopProductDTO> topProducts = orderDetailRepository.findTopSellingProducts(startDate, PageRequest.of(0, 10));

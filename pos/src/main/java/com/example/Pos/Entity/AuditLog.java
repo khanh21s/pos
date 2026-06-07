@@ -11,39 +11,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
-@Table(name = "users")
+@Table(name = "audit_logs")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class AuditLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    
-    private String name;
-    
-    @Column(unique = true, nullable = false)
-    private String username;
+    private int id;
     
     @Column(nullable = false)
-    private String password;
+    private String action; // e.g. CREATE_PRODUCT, UPDATE_PRICE, CANCEL_ORDER
     
-    private String role;  // ADMIN, STAFF
+    @Column(name = "table_name", nullable = false)
+    private String tableName;
     
-    @Column(name = "is_active")
-    private Boolean isActive = true;
+    @Column(name = "record_id")
+    private Long recordId;
+    
+    @Column(name = "user_id")
+    private Integer userId;
+    
+    @Column(name = "old_values", columnDefinition = "TEXT")
+    private String oldValues;
+    
+    @Column(name = "new_values", columnDefinition = "TEXT")
+    private String newValues;
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-    
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-    
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
 }

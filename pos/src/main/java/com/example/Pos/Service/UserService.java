@@ -26,7 +26,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(int id) {
+    public Optional<User> getUserById(Integer id) {
         return userRepository.findById(id);
     }
 
@@ -35,7 +35,7 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(int id, User userDetails) {
+    public User updateUser(Integer id, User userDetails) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
@@ -52,9 +52,13 @@ public class UserService {
     }
 
     @Transactional
-    public boolean deleteUser(int id) {
-        if (userRepository.existsById(id)) {
-            userRepository.deleteById(id);
+    public boolean deleteUser(Integer id) {
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user.setIsActive(false);
+            user.setDeletedAt(java.time.LocalDateTime.now());
+            userRepository.save(user);
             return true;
         }
         return false;

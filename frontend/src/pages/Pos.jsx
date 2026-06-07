@@ -36,6 +36,11 @@ const Pos = () => {
   const [usePoints, setUsePoints] = useState(false);
   const [pointsToUseInput, setPointsToUseInput] = useState('');
 
+  // CHẶNG 6: Khuyến mãi (Voucher)
+  const [voucherCodeInput, setVoucherCodeInput] = useState('');
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
+  const [voucherError, setVoucherError] = useState('');
+
   const fetchDraftOrders = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -254,8 +259,14 @@ const Pos = () => {
     return Math.min(val, maxPointsAllowed);
   }, [usePoints, pointsToUseInput, maxPointsAllowed, selectedCustomer]);
 
-  const discountAmount = pointsToUse * 100;
-  const finalPrice = totalPrice - discountAmount;
+  const pointsDiscountAmount = pointsToUse * 100;
+
+  const promoDiscountAmount = useMemo(() => {
+    if (!appliedVoucher) return 0;
+    return appliedVoucher.discountAmount || 0;
+  }, [appliedVoucher]);
+
+  const finalPrice = Math.max(totalPrice - promoDiscountAmount - pointsDiscountAmount, 0);
   
   const numericPaidAmount = parseFloat(paidAmount) || 0;
   const changeAmount = numericPaidAmount - finalPrice;
@@ -290,6 +301,40 @@ const Pos = () => {
     return null;
   }, [selectedCustomer, pointsToUse, finalPrice]);
 
+  const appliedVoucherCode = appliedVoucher?.code;
+  useEffect(() => {
+    if (appliedVoucherCode) {
+      const fetchUpdatedDiscount = async () => {
+        try {
+          const orderDetailsPayload = cart.map(item => ({
+              productId: item.id,
+              quantity: item.quantity,
+              sellPrice: item.sellPrice,
+              subtotal: item.sellPrice * (parseInt(item.quantity) || 0)
+          }));
+          const token = localStorage.getItem('token');
+          const res = await axios.post('http://localhost:8081/api/promotions/apply', { 
+              code: appliedVoucherCode, 
+              orderTotal: totalPrice,
+              orderDetails: orderDetailsPayload
+          }, {
+              headers: { Authorization: `Bearer ${token}` }
+          });
+          setAppliedVoucher(prev => {
+              if (prev && prev.discountAmount === res.data.discountAmount) return prev;
+              return { ...res.data.promotion, discountAmount: res.data.discountAmount };
+          });
+          setVoucherError('');
+        } catch(e) {
+          setAppliedVoucher(null);
+          setVoucherError('Giỏ hàng thay đổi khiến mã ' + appliedVoucherCode + ' không còn hợp lệ');
+        }
+      };
+      
+      const timer = setTimeout(fetchUpdatedDiscount, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [cart, totalPrice, appliedVoucherCode]);
 
   const resetCart = () => {
     setCart([]);
@@ -300,6 +345,9 @@ const Pos = () => {
     setCurrentDraftOrderId(null);
     setUsePoints(false);
     setPointsToUseInput('');
+    setVoucherCodeInput('');
+    setAppliedVoucher(null);
+    setVoucherError('');
     if (searchInputRef.current) searchInputRef.current.focus();
   };
 
@@ -326,7 +374,9 @@ const Pos = () => {
       status: status,
       paymentMethod: paymentMethod,
       usedPoints: pointsToUse,
-      discountAmount: discountAmount,
+      discountAmount: pointsDiscountAmount,
+      promotionId: appliedVoucher ? appliedVoucher.id : null,
+      promotionDiscount: promoDiscountAmount,
       orderDetails: cart.map(item => ({
         productId: item.id,
         quantity: item.quantity,
@@ -400,6 +450,32 @@ const Pos = () => {
      setCart(mappedCart);
      setUsePoints(draftOrder.usedPoints > 0);
      setPointsToUseInput(draftOrder.usedPoints > 0 ? draftOrder.usedPoints.toString() : '');
+     if (draftOrder.promotion) {
+         // Cần gọi lại API để Backend tính lại discountAmount dựa trên giỏ hàng
+         const mappedCartDetails = draftOrder.orderDetails.map(detail => ({
+            productId: detail.product.id,
+            quantity: detail.quantity,
+            sellPrice: detail.sellPrice,
+            subtotal: detail.sellPrice * (parseInt(detail.quantity) || 0)
+         }));
+         const token = localStorage.getItem('token');
+         axios.post('http://localhost:8081/api/promotions/apply', { 
+            code: draftOrder.promotion.code, 
+            orderTotal: draftOrder.totalPrice,
+            orderDetails: mappedCartDetails
+         }, {
+            headers: { Authorization: `Bearer ${token}` }
+         }).then(res => {
+            setAppliedVoucher({ ...res.data.promotion, discountAmount: res.data.discountAmount });
+         }).catch(() => {
+            setAppliedVoucher(null);
+            setVoucherError('Mã trong đơn treo không còn hợp lệ');
+         });
+     } else {
+         setAppliedVoucher(null);
+     }
+     setVoucherCodeInput('');
+     setVoucherError('');
      setIsDraftsOpen(false);
   };
 
@@ -460,7 +536,7 @@ const Pos = () => {
     };
     window.addEventListener('keydown', handleGlobalKeyDown);
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
-  }, [cart, paidAmount, totalPrice, selectedCustomer, paymentMethod, currentDraftOrderId, pointsToUseInput, usePoints]); 
+  }, [cart, paidAmount, totalPrice, selectedCustomer, paymentMethod, currentDraftOrderId, pointsToUseInput, usePoints, appliedVoucher]); 
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(price);
@@ -514,6 +590,10 @@ const Pos = () => {
           </div>
 
           <div className="header-actions">
+            <button className="btn-draft-list" onClick={() => navigate('/orders/history')} style={{marginRight: '10px'}}>
+              <Clock size={24} color="#334155" />
+              <span className="draft-text">Lịch sử Giao dịch</span>
+            </button>
             <button className="btn-draft-list" onClick={() => setIsDraftsOpen(!isDraftsOpen)}>
               <Clock size={24} color="#334155" />
               {draftOrders.length > 0 && <span className="draft-badge">{draftOrders.length}</span>}
@@ -691,6 +771,70 @@ const Pos = () => {
             <span className="checkout-total">{formatPrice(totalPrice)}</span>
           </div>
 
+          {/* CHẶNG 6: ÁP MÃ VOUCHER */}
+          {cart.length > 0 && (
+            <div className="voucher-section">
+              <div className="voucher-input-wrapper">
+                <input 
+                  type="text" 
+                  className="voucher-input"
+                  placeholder="Nhập mã khuyến mãi..." 
+                  value={voucherCodeInput}
+                  onChange={(e) => setVoucherCodeInput(e.target.value.toUpperCase())}
+                  disabled={!!appliedVoucher}
+                />
+                {!appliedVoucher ? (
+                  <button 
+                    className="btn-apply-voucher" 
+                    onClick={async () => {
+                        if(!voucherCodeInput) return;
+                        setVoucherError('');
+                        try {
+                            const orderDetailsPayload = cart.map(item => ({
+                                productId: item.id,
+                                quantity: item.quantity,
+                                sellPrice: item.sellPrice,
+                                subtotal: item.sellPrice * (parseInt(item.quantity) || 0)
+                            }));
+                            const token = localStorage.getItem('token');
+                            const res = await axios.post('http://localhost:8081/api/promotions/apply', { 
+                                code: voucherCodeInput, 
+                                orderTotal: totalPrice,
+                                orderDetails: orderDetailsPayload
+                            }, {
+                                headers: { Authorization: `Bearer ${token}` }
+                            });
+                            setAppliedVoucher({ ...res.data.promotion, discountAmount: res.data.discountAmount });
+                        } catch(e) {
+                            setVoucherError(e.response?.data?.message || 'Mã không hợp lệ');
+                        }
+                    }}
+                  >
+                    Áp dụng
+                  </button>
+                ) : (
+                  <button 
+                    className="btn-remove-voucher" 
+                    onClick={() => {
+                        setAppliedVoucher(null);
+                        setVoucherCodeInput('');
+                        setVoucherError('');
+                    }}
+                  >
+                    Xóa
+                  </button>
+                )}
+              </div>
+              {voucherError && <div className="voucher-error text-red text-sm mt-1">{voucherError}</div>}
+              {appliedVoucher && (
+                <div className="voucher-success text-green text-sm mt-1 flex justify-between">
+                  <span>Mã <b>{appliedVoucher.code}</b> đã áp dụng</span>
+                  <span className="font-bold">- {formatPrice(promoDiscountAmount)}</span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* CHẶNG 6: DÙNG ĐIỂM */}
           {selectedCustomer && cart.length > 0 && (
             <div className="points-section">
@@ -719,7 +863,7 @@ const Pos = () => {
                     min="0"
                   />
                   {pointsToUse > 0 && (
-                    <span className="points-discount-preview">- {formatPrice(discountAmount)}</span>
+                    <span className="points-discount-preview">- {formatPrice(pointsDiscountAmount)}</span>
                   )}
                 </div>
               )}

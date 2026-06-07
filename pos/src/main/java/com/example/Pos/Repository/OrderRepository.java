@@ -6,6 +6,8 @@ import java.util.List;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
     List<Order> findByStatusOrderByIdDesc(String status);
+    List<Order> findAllByOrderByCreatedAtDesc();
+    List<Order> findByCustomerAndStatus(com.example.Pos.Entity.Customer customer, String status);
 
     @org.springframework.data.jpa.repository.Query("SELECT COUNT(o) FROM Order o WHERE o.status = 'COMPLETED' AND o.createdAt >= :startDate")
     Long countCompletedOrders(@org.springframework.data.repository.query.Param("startDate") java.time.LocalDateTime startDate);
@@ -15,4 +17,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @org.springframework.data.jpa.repository.Query("SELECT SUM(o.discountAmount) FROM Order o WHERE o.status = 'COMPLETED' AND o.createdAt >= :startDate")
     Double sumDiscountAmount(@org.springframework.data.repository.query.Param("startDate") java.time.LocalDateTime startDate);
+
+    @org.springframework.data.jpa.repository.Query("SELECT SUM(o.promotionDiscount) FROM Order o WHERE o.status = 'COMPLETED' AND o.createdAt >= :startDate")
+    Double sumPromotionDiscount(@org.springframework.data.repository.query.Param("startDate") java.time.LocalDateTime startDate);
 }

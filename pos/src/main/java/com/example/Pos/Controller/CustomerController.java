@@ -27,7 +27,6 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
-    // Bỏ @RequireRole("ADMIN") để thu ngân có thể thêm khách hàng
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
         try {
@@ -88,6 +87,17 @@ public class CustomerController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @RequireRole("ADMIN")
+    @GetMapping("/sync-spent")
+    public ResponseEntity<String> syncTotalSpent() {
+        try {
+            customerService.syncTotalSpent();
+            return ResponseEntity.ok("Đã đồng bộ lại tổng chi tiêu cho tất cả khách hàng.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lỗi đồng bộ: " + e.getMessage());
         }
     }
 }

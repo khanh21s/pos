@@ -54,9 +54,14 @@ const Dashboard = () => {
       <div className="dashboard-header">
         <h1>Báo Cáo Tổng Quan</h1>
         <div className="header-actions">
-          <button onClick={() => navigate('/products')} className="nav-button">Quản lý Sản phẩm</button>
-          <button onClick={() => navigate('/suppliers')} className="nav-button">Quản lý Đối tác</button>
-          <button onClick={() => navigate('/purchase-orders')} className="nav-button" style={{backgroundColor: '#e67e22', color: 'white'}}>Lập phiếu Nhập kho</button>
+          <button onClick={() => navigate('/products')} className="nav-button">Sản phẩm</button>
+          <button onClick={() => navigate('/customers')} className="nav-button" style={{backgroundColor: '#10b981', color: 'white'}}>Khách hàng</button>
+          <button onClick={() => navigate('/promotions')} className="nav-button" style={{backgroundColor: '#8b5cf6', color: 'white'}}>Khuyến mãi</button>
+          <button onClick={() => navigate('/suppliers')} className="nav-button">Đối tác</button>
+          <button onClick={() => navigate('/purchase-orders')} className="nav-button" style={{backgroundColor: '#e67e22', color: 'white'}}>Nhập kho</button>
+          <button onClick={() => navigate('/orders/history')} className="nav-button" style={{backgroundColor: '#3498db', color: 'white'}}>Giao dịch</button>
+          <button onClick={() => navigate('/users')} className="nav-button" style={{backgroundColor: '#64748b', color: 'white'}}>Nhân viên</button>
+          <button onClick={() => navigate('/audit-logs')} className="nav-button" style={{backgroundColor: '#ef4444', color: 'white'}}>Audit Logs</button>
           <select value={range} onChange={(e) => setRange(e.target.value)} className="range-selector">
             <option value="today">Hôm nay</option>
             <option value="week">Tuần này</option>
@@ -84,6 +89,10 @@ const Dashboard = () => {
             <div className="kpi-card glass">
               <h3>Lợi nhuận gộp</h3>
               <p className="kpi-value profit">{formatCurrency(data.kpi.grossProfit)}</p>
+            </div>
+            <div className="kpi-card glass">
+              <h3>Chi phí nhập kho</h3>
+              <p className="kpi-value cost" style={{color: '#f59e0b'}}>{formatCurrency(data.kpi.totalImportCost)}</p>
             </div>
           </div>
 

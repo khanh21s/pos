@@ -45,7 +45,7 @@ public class UserController {
 
     @RequireRole("ADMIN")
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable int id) {
+    public ResponseEntity<User> getUserById(@PathVariable Integer id) {
         try {
             Optional<User> user = userService.getUserById(id);
             if (user.isPresent()) {
@@ -61,7 +61,7 @@ public class UserController {
 
     @RequireRole("ADMIN")
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable int id, @RequestBody User user) {
+    public ResponseEntity<User> updateUser(@PathVariable Integer id, @RequestBody User user) {
         try {
             User updatedUser = userService.updateUser(id, user);
             if (updatedUser != null) {
@@ -76,7 +76,7 @@ public class UserController {
 
     @RequireRole("ADMIN")
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         try {
             if (userService.deleteUser(id)) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
