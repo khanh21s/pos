@@ -158,7 +158,7 @@ const OrderHistory = () => {
             </thead>
             <tbody>
               {filteredOrders.length > 0 ? filteredOrders.map(o => (
-                <tr key={o.id} className={o.status === 'REFUNDED' ? 'row-refunded' : ''}>
+                <tr key={o.id} className={o.status?.toUpperCase() === 'REFUNDED' ? 'row-refunded' : ''}>
                   <td className="font-bold">#{o.id}</td>
                   <td>{formatDate(o.createdAt)}</td>
                   <td>{o.user ? o.user.name || o.user.username : 'N/A'}</td>
@@ -173,9 +173,9 @@ const OrderHistory = () => {
                   <td className="text-right font-semibold text-orange">{formatCurrency(o.totalPrice - (o.discountAmount || 0) - (o.promotionDiscount || 0))}</td>
                   <td className="text-center">{o.paymentMethod || 'Tiền mặt'}</td>
                   <td className="text-center">
-                    {o.status === 'COMPLETED' && <span className="badge-completed">Thành công</span>}
-                    {o.status === 'REFUNDED' && <span className="badge-refunded">Đã hoàn tiền</span>}
-                    {o.status === 'DRAFT' && <span className="badge-draft">Lưu nháp</span>}
+                    {o.status?.toUpperCase() === 'COMPLETED' && <span className="badge-completed">Thành công</span>}
+                    {o.status?.toUpperCase() === 'REFUNDED' && <span className="badge-refunded">Đã đổi trả</span>}
+                    {o.status?.toUpperCase() === 'DRAFT' && <span className="badge-draft">Lưu nháp</span>}
                   </td>
                   <td className="text-center">
                     <button className="btn-icon text-blue" onClick={() => handleOpenModal(o)}>
@@ -213,8 +213,8 @@ const OrderHistory = () => {
                   <p><strong>Phương thức:</strong> {selectedOrder.paymentMethod || 'Tiền mặt'}</p>
                   <p>
                     <strong>Trạng thái: </strong> 
-                    {selectedOrder.status === 'COMPLETED' ? <span className="text-green font-bold">Thành công</span> : 
-                     selectedOrder.status === 'REFUNDED' ? <span className="text-red font-bold">Đã hoàn tiền</span> : 
+                    {selectedOrder.status?.toUpperCase() === 'COMPLETED' ? <span className="text-green font-bold">Thành công</span> : 
+                     selectedOrder.status?.toUpperCase() === 'REFUNDED' ? <span className="text-red font-bold">Đã đổi trả</span> : 
                      selectedOrder.status}
                   </p>
                 </div>
@@ -286,7 +286,7 @@ const OrderHistory = () => {
 
             <div className="modal-footer oh-modal-footer">
               <button className="btn-secondary" onClick={() => setIsModalOpen(false)}>Đóng</button>
-              {selectedOrder.status === 'COMPLETED' && (
+              {selectedOrder.status?.toUpperCase() === 'COMPLETED' && (
                 <button 
                   className="btn-danger btn-refund" 
                   onClick={handleRefund}
